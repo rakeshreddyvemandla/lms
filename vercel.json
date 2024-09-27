@@ -2,7 +2,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "lms/wsgi.py"
+      "dest": "LMS/wsgi.py"
     }
   ]
 }
