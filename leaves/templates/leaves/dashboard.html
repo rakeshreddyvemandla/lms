@@ -1,0 +1,60 @@
+{% extends 'leaves/base.html' %}
+
+{% block title %}
+    <title>Dashboard</title>
+{% endblock title %}
+
+{% block content %}
+
+
+<div style="width: 100%;">
+    {% if leaves %} 
+    
+    {% for leave in leaves %}
+   
+    {% if leave.status == 'A' %}
+    <div class="card text-bg-success mb-3" style="max-width: 30rem; margin: 10px auto;">
+    {% elif leave.status == 'P' %}
+    <div class="card text-bg-secondary mb-3" style="max-width: 30rem; margin: 10px auto;">
+    {% else %}
+    <div class="card text-bg-danger mb-3" style="max-width: 30rem; margin: 10px auto;">
+    {% endif %}
+      <div class="card-header">Leave Type: {{ leave.leave_type }} | Requested on: {{ leave.applied_on | date}}</div>
+      <div class="card-body">
+        <h5 class="card-title">Employee Name: {{ leave }}</h5>
+      <p>From Date: {{ leave.start_date }}</p>
+      <p>To Date: {{ leave.end_date }}</p>
+      <p>Duration: {{ leave.duration }} day(s)</p>
+      <p>Status: {% if leave.status == 'A' %}Approved{% elif leave.status == 'P' %}Pending{% else %} Rejected{% endif %}</p>
+
+      {% if leave.status == 'R' %}
+      <p>Rejected Reason: {{ leave.remarks }}</p>
+      {% endif %}
+        {% if leave.supervisor.id == request.user.id %}
+
+      <form action="{% url 'approve' leave.id %}" method="post">
+        {% csrf_token %}
+        
+        <label for="remarks">Remarks: </label
+        ><input type="text" name="remarks" id="remarks" />
+        <a href="{% url 'approve' leave.id %}"
+          ><button type="submit" class="btn btn-primary">Approve</button></a
+        >
+      </form>
+      <form action="{% url 'reject' leave.id %}" method="post">
+        {% csrf_token %}
+        <label for="remarks">Remarks: </label
+        ><input type="text" name="remarks" id="remarks" />
+        <a href="{% url 'reject' leave.id %}"
+          ><button type="submit" class="btn btn-danger">Reject</button></a
+        >
+      </form>
+      {% endif %}
+      </div>
+        
+    </div> 
+  </div>
+      
+    {% endfor %} {% endif %}
+
+    {% endblock content %}
